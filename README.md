@@ -1,54 +1,146 @@
-# vocal-journaling-builder-sdk
+# USpeaks Vocal Journaling API
 
-Builder-facing SDK and public contracts for integrating with the Vocal Journaling platform without coupling to the private application repository.
+<p align="center">
+  <img src="./docs/assets/uspeakslogov1.png" alt="USpeaks logo" width="220" />
+</p>
 
-## Purpose
+<p align="center">
+  Public TypeScript SDK and API contracts for teams integrating voice journaling into USpeaks.
+</p>
 
-This repository contains only public-safe, reusable builder-facing code and documentation.
-It excludes internal platform implementation, infrastructure, prompts, operational tooling, and private architecture.
+<p align="center">
+  <a href="./docs/SETUP.md">Setup Guide</a>
+  ·
+  <a href="./SECURITY.md">Security Boundary</a>
+  ·
+  <a href="./MAINTENANCE.md">Maintenance Workflow</a>
+</p>
 
-## What Is Included
+<p align="center">
+  <img src="./docs/assets/uspeaks_black_background.png" alt="USpeaks brand artwork" width="420" />
+</p>
 
-- Public API client helpers
-- Public request and response contracts
-- Builder-safe examples with placeholder values
-- Tests for the exported surface
+USpeaks helps teams collect and process spoken journal entries through a clean, builder-friendly API surface.
 
-## What Is Not Included
+## Overview
 
-- Internal services and orchestration
-- Deployment and infrastructure code
-- Secrets, environment-specific credentials, and operational docs
-- Proprietary prompts, analytics internals, and company-specific workflows
+This repository is the public integration layer for the USpeaks Vocal Journaling platform. It gives external teams a stable SDK and typed contracts for submitting entries without exposing private platform code, infrastructure, or internal workflows.
 
-## Installation
+## Who It’s For
 
-```bash
-pnpm install
+- Product teams adding voice journaling to their applications
+- Engineering teams building direct integrations with USpeaks
+- Partners or agencies implementing custom ingestion workflows
+- Internal teams who need a public-safe reference package for external builders
+
+If you need the private platform implementation, this is the wrong repository. If you need the public contract and a clean SDK surface, this is the right one.
+
+## What’s Included
+
+| Area | Included here |
+| --- | --- |
+| SDK | A TypeScript client for the public API |
+| Contracts | Public request and response types |
+| Examples | Builder-safe Node and `curl` examples |
+| Validation | Minimal request/config validation helpers |
+| Governance | Setup, maintenance, and security-boundary docs |
+
+## API Surface
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/health` | Confirms the API is reachable and returns a version |
+| `POST` | `/v1/journal-entries` | Accepts a voice journal entry upload request |
+
+### Request shape
+
+```ts
+interface VoiceJournalUploadRequest {
+  fileName: string;
+  contentType: string;
+  audioBase64: string;
+  metadata?: Record<string, string>;
+}
+```
+
+### Response shape
+
+```ts
+interface VoiceJournalUploadResponse {
+  entryId: string;
+  status: "accepted";
+}
 ```
 
 ## Quick Start
+
+### Install
+
+```bash
+pnpm add vocal-journaling-builder-sdk
+```
+
+### Use the SDK
 
 ```ts
 import { createClient } from "vocal-journaling-builder-sdk";
 
 const client = createClient({
-  baseUrl: "https://api.example.com",
-  apiKey: "replace-with-builder-key",
+  baseUrl: process.env.VOCAL_JOURNALING_API_BASE_URL ?? "https://api.example.com",
+  apiKey: process.env.VOCAL_JOURNALING_API_KEY,
 });
+
+const health = await client.getHealth();
+
+const upload = await client.uploadEntry({
+  fileName: "sample.m4a",
+  contentType: "audio/mp4",
+  audioBase64: "ZmFrZS1hdWRpby1ieXRlcw==",
+  metadata: {
+    source: "partner-demo",
+  },
+});
+
+console.log({ health, upload });
+```
+
+### Call the API directly
+
+```bash
+curl --request POST \
+  --url "${VOCAL_JOURNALING_API_BASE_URL}/v1/journal-entries" \
+  --header "Authorization: Bearer ${VOCAL_JOURNALING_API_KEY}" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "fileName": "sample.m4a",
+    "contentType": "audio/mp4",
+    "audioBase64": "ZmFrZS1hdWRpby1ieXRlcw==",
+    "metadata": {
+      "source": "example"
+    }
+  }'
 ```
 
 ## Configuration
 
-Copy `.env.example` only for local examples and supply your own builder-safe values.
-Never commit real credentials.
+```bash
+VOCAL_JOURNALING_API_BASE_URL=https://api.example.com
+VOCAL_JOURNALING_API_KEY=replace-with-builder-key
+```
 
-## Compatibility
+Use builder-safe values only. Copy `.env.example` for local examples and never commit real credentials.
 
-This repository evolves intentionally alongside the private platform, but it remains an independent repository with separate Git history and release lifecycle.
+## Documentation
 
-Compatibility target:
-- Platform API contract: `v1.x`
+- [Repository Setup Guide](./docs/SETUP.md)
+- [Security Boundary Checklist](./SECURITY.md)
+- [Maintenance Workflow](./MAINTENANCE.md)
+- [Node example](./examples/node-basic/index.ts)
+- [cURL example](./examples/curl/upload-entry.sh)
+
+## Repository Boundary
+
+This repository is intentionally public-safe. It does not include internal services, infrastructure, private prompts, operational tooling, or production data. Review [SECURITY.md](./SECURITY.md) before publishing changes.
 
 ## Development
 
@@ -59,31 +151,26 @@ pnpm typecheck
 pnpm build
 ```
 
-## Initial Git Setup
+Or run the full verification flow:
 
 ```bash
-git init -b main
-git remote add origin git@github.com:YOUR_ORG/vocal-journaling-builder-sdk.git
-git push -u origin main
+pnpm check
 ```
 
-## Repository Boundary
+## Compatibility
 
-See `SECURITY.md` for the explicit boundary on what may and may not be included here.
+This package tracks the public USpeaks API contract independently from the private platform repository.
+
+Compatibility target: `v1.x`
 
 ## Release Process
 
-- Curate builder-safe changes from the private platform repository.
-- Re-author or copy only the public surface.
-- Run `pnpm check` before each release.
-- Keep commit messages and changelog entries external-facing.
-
-## Relationship To The Private Platform
-
-This repository is a companion repository. It can evolve in lockstep conceptually with the private platform, but it does not share Git history, remote configuration, or internal implementation details.
-
-For local convenience, it may live as a nested Git repository inside the private platform repository under `/_external/`. That physical location does not change the source-control boundary.
+1. Curate builder-safe changes from the private platform.
+2. Remove internal names, URLs, comments, and credentials.
+3. Run `pnpm check`.
+4. Review the publishing boundary in [SECURITY.md](./SECURITY.md).
+5. Publish only external-facing documentation and examples.
 
 ## License
 
-`UNLICENSED` by default. Replace this only when you decide the distribution terms for external builders.
+`UNLICENSED`

@@ -14,7 +14,9 @@
   "files": [
     "dist",
     "README.md",
-    "SECURITY.md"
+    "SECURITY.md",
+    "NOTICE",
+    "TERMS.md"
   ],
   "scripts": {
     "build": "rm -rf dist && tsc -p tsconfig.build.json",
@@ -28,7 +30,7 @@
     "voice",
     "api"
   ],
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "packageManager": "pnpm@10.15.0",
   "engines": {
     "node": ">=18.0.0"

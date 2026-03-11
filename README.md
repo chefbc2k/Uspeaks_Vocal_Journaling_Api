@@ -15,6 +15,8 @@
   ·
   <a href="https://journal-api-layer-main-22c4b17.zuplo.app">API Base URL</a>
   ·
+  <a href="./TERMS.md">Hosted API Terms</a>
+  ·
   <a href="./docs/SETUP.md">Repo Setup</a>
 </p>
 
@@ -151,6 +153,7 @@ Relevant public types include:
 - [Developer docs / portal landing](https://journal-api-layer-main-22c4b17.zuplo.site/api)
 - [Developer sign-in](https://journal-api-layer-main-22c4b17.zuplo.site/signin)
 - [API base URL](https://journal-api-layer-main-22c4b17.zuplo.app)
+- [Hosted API terms](./TERMS.md)
 - [Repository setup guide](./docs/SETUP.md)
 - [Maintenance notes](./MAINTENANCE.md)
 - [Security policy](./SECURITY.md)
@@ -185,4 +188,7 @@ VOCAL_JOURNALING_ACCESS_TOKEN=replace-with-supabase-user-jwt
 
 ## License
 
-`UNLICENSED`
+The contents of this repository are licensed under [Apache License 2.0](./LICENSE).
+
+Use of the hosted Vocal Journaling API service is governed separately by the
+[Hosted API Terms](./TERMS.md).

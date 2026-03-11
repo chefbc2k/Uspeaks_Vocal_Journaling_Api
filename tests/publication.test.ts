@@ -4,8 +4,10 @@ import { describe, expect, it } from "vitest";
 
 interface PackageJson {
   name: string;
+  license: string;
   main: string;
   types: string;
+  files?: string[];
 }
 
 interface TsConfigBuild {
@@ -24,8 +26,10 @@ describe("publication contract", () => {
     ) as TsConfigBuild;
 
     expect(pkg.name).toBe("uspeaks-vocal-journaling-api");
+    expect(pkg.license).toBe("Apache-2.0");
     expect(pkg.main).toBe("./dist/index.js");
     expect(pkg.types).toBe("./dist/index.d.ts");
+    expect(pkg.files).toEqual(["dist", "README.md", "SECURITY.md", "NOTICE", "TERMS.md"]);
     expect(buildConfig.compilerOptions?.rootDir).toBe("src");
     expect(buildConfig.include).toEqual(["src/**/*.ts"]);
     expect(buildConfig.exclude).toEqual(["tests/**/*.ts"]);
@@ -38,5 +42,6 @@ describe("publication contract", () => {
     expect(readme).toContain("https://journal-api-layer-main-22c4b17.zuplo.site/signin");
     expect(readme).toContain("https://journal-api-layer-main-22c4b17.zuplo.app");
     expect(readme).toContain('import { createClient } from "uspeaks-vocal-journaling-api";');
+    expect(readme).toContain("[Hosted API Terms](./TERMS.md)");
   });
 });

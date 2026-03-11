@@ -5,144 +5,155 @@
 </p>
 
 <p align="center">
-  Public TypeScript SDK and API contracts for teams integrating voice journaling into USpeaks.
+  Voice-first journaling infrastructure for capturing recordings, analyzing how people speak, and powering chat, coaching, insights, and history experiences through a single API.
 </p>
 
 <p align="center">
-  <a href="./docs/SETUP.md">Setup Guide</a>
+  <a href="https://journal-api-layer-main-22c4b17.zuplo.site/api">Developer Portal</a>
   ·
-  <a href="./SECURITY.md">Security Boundary</a>
+  <a href="https://journal-api-layer-main-22c4b17.zuplo.site/signin">Sign In</a>
   ·
-  <a href="./MAINTENANCE.md">Maintenance Workflow</a>
+  <a href="https://journal-api-layer-main-22c4b17.zuplo.app">API Base URL</a>
+  ·
+  <a href="./docs/SETUP.md">Repo Setup</a>
 </p>
 
-<p align="center">
-  <img src="./docs/assets/uspeaks_black_background.png" alt="USpeaks brand artwork" width="420" />
-</p>
+## What This API Does
 
-USpeaks helps teams collect and process spoken journal entries through a clean, builder-friendly API surface.
+The USpeaks Vocal Journaling API turns voice entries into structured, usable product data.
 
-## Overview
+Developers can use it to:
 
-This repository is the public integration layer for the USpeaks Vocal Journaling platform. It gives external teams a stable SDK and typed contracts for submitting entries without exposing private platform code, infrastructure, or internal workflows.
+- upload a recording and receive transcript, sentiment, voice dynamics, and analysis metadata,
+- power conversational experiences on top of prior entries,
+- generate coaching prompts and guidance,
+- surface aggregate insights across a user’s recordings,
+- retrieve recent history for timeline and journal views.
 
-## Who It’s For
+This repository contains the typed client, public contracts, examples, and tests that map to the live gateway and developer portal.
 
-- Product teams adding voice journaling to their applications
-- Engineering teams building direct integrations with USpeaks
-- Partners or agencies implementing custom ingestion workflows
-- Internal teams who need a public-safe reference package for external builders
+## What You Can Build
 
-If you need the private platform implementation, this is the wrong repository. If you need the public contract and a clean SDK surface, this is the right one.
+- Voice journal capture flows
+- Reflection and check-in products
+- Coaching and habit-building experiences
+- Insight dashboards and trend views
+- Searchable history and recap surfaces
 
-## What’s Included
+## Authentication Model
 
-| Area | Included here |
-| --- | --- |
-| SDK | A TypeScript client for the public API |
-| Contracts | Public request and response types |
-| Examples | Builder-safe Node and `curl` examples |
-| Validation | Minimal request/config validation helpers |
-| Governance | Setup, maintenance, and security-boundary docs |
+There are two developer-facing layers in the current platform:
 
-## API Surface
+### 1. Developer portal access
 
-| Method | Path | Purpose |
-| --- | --- | --- |
-| `GET` | `/health` | Confirms the API is reachable and returns a version |
-| `POST` | `/v1/journal-entries` | Accepts a voice journal entry upload request |
+Developers sign into the portal at [journal-api-layer-main-22c4b17.zuplo.site/signin](https://journal-api-layer-main-22c4b17.zuplo.site/signin) to access the hosted documentation and manage developer-facing API keys in Zuplo.
 
-### Request shape
+### 2. App request authentication
 
-```ts
-interface VoiceJournalUploadRequest {
-  fileName: string;
-  contentType: string;
-  audioBase64: string;
-  metadata?: Record<string, string>;
-}
+Protected application routes currently require a Supabase user access token:
+
+```http
+Authorization: Bearer <supabase-user-jwt>
 ```
 
-### Response shape
+Today, the portal and API key management layer does not replace end-user identity for voice, chat, coaching, insights, or history calls. Those routes are still user-scoped.
 
-```ts
-interface VoiceJournalUploadResponse {
-  entryId: string;
-  status: "accepted";
-}
-```
+## Endpoint Overview
+
+| Method | Route | Auth | Purpose |
+| --- | --- | --- | --- |
+| `GET` | `/health` | Public | Liveness and version check |
+| `POST` | `/api/v1/voice` | Supabase JWT | Upload a recording for transcript + voice analysis |
+| `POST` | `/api/v1/chat` | Supabase JWT | Analyze or respond to freeform text |
+| `POST` | `/api/v1/coaching` | Supabase JWT | Return coaching guidance and a follow-up question |
+| `GET` | `/api/v1/insights` | Supabase JWT | Aggregate insights over `day`, `week`, or `month` |
+| `GET` | `/api/v1/history` | Supabase JWT | Fetch recent recording history with `limit` and `days` filters |
+
+Full route details and response schemas live in the [Developer Portal](https://journal-api-layer-main-22c4b17.zuplo.site/api).
 
 ## Quick Start
 
-### Install
+### Upload a recording
 
 ```bash
-pnpm add vocal-journaling-builder-sdk
+curl --request POST \
+  --url "https://journal-api-layer-main-22c4b17.zuplo.app/api/v1/voice" \
+  --header "Authorization: Bearer $SUPABASE_JWT" \
+  --form "audio=@./recording.wav"
 ```
 
-### Use the SDK
+Example response:
+
+```json
+{
+  "id": "analysis-1",
+  "transcript": "Hello, this is the transcript.",
+  "sentiment": { "overall": "neutral", "score": 0.1 },
+  "voiceType": "steady",
+  "createdAt": "2026-03-07T00:00:00.000Z"
+}
+```
+
+### Use the TypeScript client
 
 ```ts
 import { createClient } from "vocal-journaling-builder-sdk";
 
 const client = createClient({
-  baseUrl: process.env.VOCAL_JOURNALING_API_BASE_URL ?? "https://api.example.com",
-  apiKey: process.env.VOCAL_JOURNALING_API_KEY,
+  baseUrl: "https://journal-api-layer-main-22c4b17.zuplo.app",
+  accessToken: process.env.VOCAL_JOURNALING_ACCESS_TOKEN,
 });
 
-const health = await client.getHealth();
-
-const upload = await client.uploadEntry({
-  fileName: "sample.m4a",
-  contentType: "audio/mp4",
-  audioBase64: "ZmFrZS1hdWRpby1ieXRlcw==",
-  metadata: {
-    source: "partner-demo",
-  },
+const analysis = await client.uploadVoice({
+  audio: file,
+  fileName: "entry.wav",
+  contentType: "audio/wav",
 });
 
-console.log({ health, upload });
+const insights = await client.getInsights({ period: "week" });
 ```
 
-### Call the API directly
+### Query insights
 
 ```bash
-curl --request POST \
-  --url "${VOCAL_JOURNALING_API_BASE_URL}/v1/journal-entries" \
-  --header "Authorization: Bearer ${VOCAL_JOURNALING_API_KEY}" \
-  --header "Content-Type: application/json" \
-  --data '{
-    "fileName": "sample.m4a",
-    "contentType": "audio/mp4",
-    "audioBase64": "ZmFrZS1hdWRpby1ieXRlcw==",
-    "metadata": {
-      "source": "example"
-    }
-  }'
+curl --header "Authorization: Bearer $SUPABASE_JWT" \
+  "https://journal-api-layer-main-22c4b17.zuplo.app/api/v1/insights?period=week"
 ```
 
-## Configuration
+## Public SDK Surface
 
-```bash
-VOCAL_JOURNALING_API_BASE_URL=https://api.example.com
-VOCAL_JOURNALING_API_KEY=replace-with-builder-key
-```
+This package exposes typed helpers for the live gateway routes:
 
-Use builder-safe values only. Copy `.env.example` for local examples and never commit real credentials.
+- `getHealth()`
+- `uploadVoice()`
+- `chat()`
+- `getCoaching()`
+- `getInsights()`
+- `getHistory()`
 
-## Documentation
+Relevant public types include:
 
-- [Repository Setup Guide](./docs/SETUP.md)
-- [Security Boundary Checklist](./SECURITY.md)
-- [Maintenance Workflow](./MAINTENANCE.md)
+- `VoiceUploadRequest`
+- `VoiceAnalysisResponse`
+- `TextPayload`
+- `ChatResponse`
+- `CoachingResponse`
+- `InsightsResponse`
+- `HistoryResponse`
+- `ErrorResponse`
+
+## Developer Resources
+
+- [Developer Portal](https://journal-api-layer-main-22c4b17.zuplo.site/api)
+- [Developer Sign-In](https://journal-api-layer-main-22c4b17.zuplo.site/signin)
+- [API Base URL](https://journal-api-layer-main-22c4b17.zuplo.app)
+- [Repository setup guide](./docs/SETUP.md)
+- [Maintenance notes](./MAINTENANCE.md)
+- [Security policy](./SECURITY.md)
 - [Node example](./examples/node-basic/index.ts)
-- [cURL example](./examples/curl/upload-entry.sh)
+- [cURL upload example](./examples/curl/upload-entry.sh)
 
-## Repository Boundary
-
-This repository is intentionally public-safe. It does not include internal services, infrastructure, private prompts, operational tooling, or production data. Review [SECURITY.md](./SECURITY.md) before publishing changes.
-
-## Development
+## Local Development
 
 ```bash
 pnpm install
@@ -151,25 +162,22 @@ pnpm typecheck
 pnpm build
 ```
 
-Or run the full verification flow:
+Run the full verification loop with:
 
 ```bash
 pnpm check
 ```
 
-## Compatibility
+Copy the sample environment file for local examples:
 
-This package tracks the public USpeaks API contract independently from the private platform repository.
+```bash
+cp .env.example .env
+```
 
-Compatibility target: `v1.x`
-
-## Release Process
-
-1. Curate builder-safe changes from the private platform.
-2. Remove internal names, URLs, comments, and credentials.
-3. Run `pnpm check`.
-4. Review the publishing boundary in [SECURITY.md](./SECURITY.md).
-5. Publish only external-facing documentation and examples.
+```bash
+VOCAL_JOURNALING_API_BASE_URL=https://journal-api-layer-main-22c4b17.zuplo.app
+VOCAL_JOURNALING_ACCESS_TOKEN=replace-with-supabase-user-jwt
+```
 
 ## License
 

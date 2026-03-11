@@ -1,7 +1,19 @@
-export { createClient } from "./client/apiClient.js";
+export { BuilderApiError, createClient } from "./client/apiClient.js";
 export type {
+  BinaryLike,
   BuilderClientConfig,
+  ChatResponse,
+  CoachingResponse,
+  CoachingTextPayload,
+  ErrorResponse,
   HealthResponse,
-  VoiceJournalUploadRequest,
-  VoiceJournalUploadResponse,
+  HistoryItem,
+  HistoryQuery,
+  HistoryResponse,
+  InsightsPeriod,
+  InsightsQuery,
+  InsightsResponse,
+  TextPayload,
+  VoiceAnalysisResponse,
+  VoiceUploadRequest,
 } from "./types/public.js";

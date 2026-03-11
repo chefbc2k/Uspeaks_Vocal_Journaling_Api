@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { BuilderApiError, createClient } from "../src/index.js";
+import { VocalJournalingApiError, createClient } from "../src/index.js";
 
 const originalFetch = globalThis.fetch;
 
@@ -99,11 +99,11 @@ describe("createClient", () => {
     });
 
     await expect(client.uploadVoice({ audio: new Uint8Array([1]) })).rejects.toMatchObject({
-      name: "BuilderApiError",
+      name: "VocalJournalingApiError",
       status: 400,
       code: "MISSING_FILE",
       requestId: "req-123",
       message: "Audio file is required",
-    } satisfies Partial<BuilderApiError>);
+    } satisfies Partial<VocalJournalingApiError>);
   });
 });

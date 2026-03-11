@@ -1,5 +1,5 @@
 import type {
-  BuilderClientConfig,
+  VocalJournalingClientConfig,
   CoachingTextPayload,
   HistoryQuery,
   InsightsQuery,
@@ -7,7 +7,7 @@ import type {
   VoiceUploadRequest,
 } from "../types/public.js";
 
-export function assertValidConfig(config: BuilderClientConfig): void {
+export function assertValidConfig(config: VocalJournalingClientConfig): void {
   if (!config.baseUrl) {
     throw new Error("baseUrl is required");
   }

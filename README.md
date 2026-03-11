@@ -1,17 +1,17 @@
-# USpeaks Vocal Journaling API
+# Vocal Journaling API SDK
 
 <p align="center">
   <img src="./docs/assets/uspeakslogov1.png" alt="USpeaks logo" width="220" />
 </p>
 
 <p align="center">
-  Voice-first journaling infrastructure for capturing recordings, analyzing how people speak, and powering chat, coaching, insights, and history experiences through a single API.
+  Typed SDK, examples, and public contracts for the live Vocal Journaling API gateway.
 </p>
 
 <p align="center">
-  <a href="https://journal-api-layer-main-22c4b17.zuplo.site/api">Developer Portal</a>
+  <a href="https://journal-api-layer-main-22c4b17.zuplo.site/api">Developer Docs</a>
   ·
-  <a href="https://journal-api-layer-main-22c4b17.zuplo.site/signin">Sign In</a>
+  <a href="https://journal-api-layer-main-22c4b17.zuplo.site/signin">Developer Sign-In</a>
   ·
   <a href="https://journal-api-layer-main-22c4b17.zuplo.app">API Base URL</a>
   ·
@@ -20,7 +20,7 @@
 
 ## What This API Does
 
-The USpeaks Vocal Journaling API turns voice entries into structured, usable product data.
+The Vocal Journaling API turns voice entries into structured, usable product data.
 
 Developers can use it to:
 
@@ -30,7 +30,7 @@ Developers can use it to:
 - surface aggregate insights across a user’s recordings,
 - retrieve recent history for timeline and journal views.
 
-This repository contains the typed client, public contracts, examples, and tests that map to the live gateway and developer portal.
+This repository contains the publishable SDK surface, examples, and public contracts that map to the live Zuplo gateway and developer portal.
 
 ## What You Can Build
 
@@ -46,7 +46,7 @@ There are two developer-facing layers in the current platform:
 
 ### 1. Developer portal access
 
-Developers sign into the portal at [journal-api-layer-main-22c4b17.zuplo.site/signin](https://journal-api-layer-main-22c4b17.zuplo.site/signin) to access the hosted documentation and manage developer-facing API keys in Zuplo.
+Developers sign into the portal at [journal-api-layer-main-22c4b17.zuplo.site/signin](https://journal-api-layer-main-22c4b17.zuplo.site/signin) to access the hosted documentation and any developer account features exposed through the Zuplo portal.
 
 ### 2. App request authentication
 
@@ -56,7 +56,7 @@ Protected application routes currently require a Supabase user access token:
 Authorization: Bearer <supabase-user-jwt>
 ```
 
-Today, the portal and API key management layer does not replace end-user identity for voice, chat, coaching, insights, or history calls. Those routes are still user-scoped.
+Today, portal access does not replace end-user identity for voice, chat, coaching, insights, or history calls. Those routes are still user-scoped.
 
 ## Endpoint Overview
 
@@ -69,7 +69,7 @@ Today, the portal and API key management layer does not replace end-user identit
 | `GET` | `/api/v1/insights` | Supabase JWT | Aggregate insights over `day`, `week`, or `month` |
 | `GET` | `/api/v1/history` | Supabase JWT | Fetch recent recording history with `limit` and `days` filters |
 
-Full route details and response schemas live in the [Developer Portal](https://journal-api-layer-main-22c4b17.zuplo.site/api).
+Full route details and response schemas live in the [Developer docs / portal landing page](https://journal-api-layer-main-22c4b17.zuplo.site/api).
 
 ## Quick Start
 
@@ -97,7 +97,7 @@ Example response:
 ### Use the TypeScript client
 
 ```ts
-import { createClient } from "vocal-journaling-builder-sdk";
+import { createClient } from "uspeaks-vocal-journaling-api";
 
 const client = createClient({
   baseUrl: "https://journal-api-layer-main-22c4b17.zuplo.app",
@@ -119,6 +119,10 @@ const insights = await client.getInsights({ period: "week" });
 curl --header "Authorization: Bearer $SUPABASE_JWT" \
   "https://journal-api-layer-main-22c4b17.zuplo.app/api/v1/insights?period=week"
 ```
+
+## Published Package
+
+`uspeaks-vocal-journaling-api`
 
 ## Public SDK Surface
 
@@ -144,9 +148,9 @@ Relevant public types include:
 
 ## Developer Resources
 
-- [Developer Portal](https://journal-api-layer-main-22c4b17.zuplo.site/api)
-- [Developer Sign-In](https://journal-api-layer-main-22c4b17.zuplo.site/signin)
-- [API Base URL](https://journal-api-layer-main-22c4b17.zuplo.app)
+- [Developer docs / portal landing](https://journal-api-layer-main-22c4b17.zuplo.site/api)
+- [Developer sign-in](https://journal-api-layer-main-22c4b17.zuplo.site/signin)
+- [API base URL](https://journal-api-layer-main-22c4b17.zuplo.app)
 - [Repository setup guide](./docs/SETUP.md)
 - [Maintenance notes](./MAINTENANCE.md)
 - [Security policy](./SECURITY.md)

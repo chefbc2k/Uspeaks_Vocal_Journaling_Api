@@ -1,4 +1,4 @@
-export interface BuilderClientConfig {
+export interface VocalJournalingClientConfig {
   baseUrl: string;
   accessToken?: string;
   timeoutMs?: number;

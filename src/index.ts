@@ -1,7 +1,7 @@
-export { BuilderApiError, createClient } from "./client/apiClient.js";
+export { VocalJournalingApiError, createClient } from "./client/apiClient.js";
 export type {
   BinaryLike,
-  BuilderClientConfig,
+  VocalJournalingClientConfig,
   ChatResponse,
   CoachingResponse,
   CoachingTextPayload,

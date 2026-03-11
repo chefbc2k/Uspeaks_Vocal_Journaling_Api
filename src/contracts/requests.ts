@@ -6,7 +6,7 @@ import type {
   VoiceUploadRequest,
 } from "../types/public.js";
 
-export interface BuilderApiRequestMap {
+export interface VocalJournalingApiRequestMap {
   uploadVoice: VoiceUploadRequest;
   chat: TextPayload;
   coaching: CoachingTextPayload;

@@ -1,6 +1,6 @@
 # Security Boundary Checklist
 
-This repository is intended to be safe to share with external builders. The boundary is strict.
+This repository is intended to be safe to share with external developers. The boundary is strict.
 
 ## Must Never Be Copied Here
 
@@ -24,7 +24,7 @@ test ! -f .env
 
 Manual review is also required:
 
-- Confirm README content stays builder-facing
+- Confirm README content stays developer-facing and matches the live portal URLs
 - Confirm examples use placeholders only
 - Confirm commit history is public-safe and external-facing
 - Confirm no copied file still contains internal names, URLs, or comments

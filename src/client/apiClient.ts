@@ -1,5 +1,5 @@
 import type {
-  BuilderClientConfig,
+  VocalJournalingClientConfig,
   ChatResponse,
   CoachingResponse,
   CoachingTextPayload,
@@ -22,21 +22,21 @@ import {
   assertValidVoiceUploadRequest,
 } from "../utils/validation.js";
 
-export class BuilderApiError extends Error {
+export class VocalJournalingApiError extends Error {
   readonly status: number;
   readonly code?: string;
   readonly requestId?: string;
 
   constructor(status: number, payload: ErrorResponse | undefined) {
     super(payload?.error ?? `Request failed with status ${status}`);
-    this.name = "BuilderApiError";
+    this.name = "VocalJournalingApiError";
     this.status = status;
     this.code = payload?.code;
     this.requestId = payload?.requestId;
   }
 }
 
-export interface BuilderClient {
+export interface VocalJournalingClient {
   getHealth(): Promise<HealthResponse>;
   uploadVoice(request: VoiceUploadRequest): Promise<VoiceAnalysisResponse>;
   chat(request: TextPayload): Promise<ChatResponse>;
@@ -75,7 +75,7 @@ function withQuery(path: string, params?: Array<[string, string | number | undef
   return `${url.pathname}${url.search}`;
 }
 
-export function createClient(config: BuilderClientConfig): BuilderClient {
+export function createClient(config: VocalJournalingClientConfig): VocalJournalingClient {
   assertValidConfig(config);
 
   function createHeaders(init?: HeadersInit): Headers {
@@ -99,7 +99,7 @@ export function createClient(config: BuilderClientConfig): BuilderClient {
     const payload = isJson ? ((await response.json()) as T | ErrorResponse) : undefined;
 
     if (!response.ok) {
-      throw new BuilderApiError(response.status, payload as ErrorResponse | undefined);
+      throw new VocalJournalingApiError(response.status, payload as ErrorResponse | undefined);
     }
 
     return payload as T;

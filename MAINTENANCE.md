@@ -6,7 +6,7 @@ Use intentional manual sync. Do not share Git history with the private platform 
 
 ## Update Flow
 
-1. Identify a builder-safe change in the private repository.
+1. Identify a public-safe change in the private repository.
 2. Copy or re-author only the public surface into this repository.
 3. Remove internal names, URLs, comments, and credentials before staging.
 4. Run `pnpm check`.
@@ -18,6 +18,7 @@ Use intentional manual sync. Do not share Git history with the private platform 
 
 - Track compatibility in README or release notes with a contract version such as `v1.x`.
 - Do not reference private commit SHAs or private pull requests.
+- Keep the developer docs URL, sign-in URL, and API base URL aligned with the live Zuplo deployment.
 
 ## Sync Discipline
 

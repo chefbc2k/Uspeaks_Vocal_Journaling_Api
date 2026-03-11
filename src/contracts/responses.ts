@@ -7,7 +7,7 @@ import type {
   VoiceAnalysisResponse,
 } from "../types/public.js";
 
-export interface BuilderApiResponseMap {
+export interface VocalJournalingApiResponseMap {
   health: HealthResponse;
   uploadVoice: VoiceAnalysisResponse;
   chat: ChatResponse;

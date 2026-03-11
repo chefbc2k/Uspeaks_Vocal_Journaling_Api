@@ -59,6 +59,14 @@ pnpm typecheck
 pnpm build
 ```
 
+## Initial Git Setup
+
+```bash
+git init -b main
+git remote add origin git@github.com:YOUR_ORG/vocal-journaling-builder-sdk.git
+git push -u origin main
+```
+
 ## Repository Boundary
 
 See `SECURITY.md` for the explicit boundary on what may and may not be included here.

@@ -82,6 +82,8 @@ See `SECURITY.md` for the explicit boundary on what may and may not be included 
 
 This repository is a companion repository. It can evolve in lockstep conceptually with the private platform, but it does not share Git history, remote configuration, or internal implementation details.
 
+For local convenience, it may live as a nested Git repository inside the private platform repository under `/_external/`. That physical location does not change the source-control boundary.
+
 ## License
 
 `UNLICENSED` by default. Replace this only when you decide the distribution terms for external builders.

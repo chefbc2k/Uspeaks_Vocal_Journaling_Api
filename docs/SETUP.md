@@ -1,11 +1,11 @@
 # Setup Commands
 
-## Create The Repository Beside The Private Repo
+## Create The Repository Inside The Private Repo As A Nested Git Repository
 
 ```bash
-cd /Volumes/machdext/speakplatform/Final/FOH
-mkdir vocal-journaling-builder-sdk
-cd vocal-journaling-builder-sdk
+cd /Volumes/machdext/speakplatform/Final/FOH/vocal-journaling-api
+mkdir -p _external/vocal-journaling-builder-sdk
+cd _external/vocal-journaling-builder-sdk
 git init -b main
 pnpm install
 ```
@@ -30,8 +30,8 @@ rg -n "process\\.env|SUPABASE|MEMORI|ZUPLO|DigitalOcean|internal|private|secret|
 Then copy only reviewed files:
 
 ```bash
-cp path/to/reviewed-safe-file.ts ../vocal-journaling-builder-sdk/src/
-cp path/to/reviewed-safe-doc.md ../vocal-journaling-builder-sdk/docs/
+cp path/to/reviewed-safe-file.ts _external/vocal-journaling-builder-sdk/src/
+cp path/to/reviewed-safe-doc.md _external/vocal-journaling-builder-sdk/docs/
 ```
 
 ## Verification
@@ -40,7 +40,7 @@ cp path/to/reviewed-safe-doc.md ../vocal-journaling-builder-sdk/docs/
 cd /Volumes/machdext/speakplatform/Final/FOH/vocal-journaling-api
 git status
 
-cd /Volumes/machdext/speakplatform/Final/FOH/vocal-journaling-builder-sdk
+cd /Volumes/machdext/speakplatform/Final/FOH/vocal-journaling-api/_external/vocal-journaling-builder-sdk
 git status
 git remote -v
 pnpm check
